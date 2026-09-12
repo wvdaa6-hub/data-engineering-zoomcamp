@@ -1,7 +1,3 @@
-variable "project" {
-  description = "GCP Project ID"
-}
-
 terraform {
   required_providers {
     google = {
@@ -13,13 +9,14 @@ terraform {
 
 provider "google" {
   project = var.project
-  region  = "europe-west1"
+  region  = var.region
 }
 
-resource "google_storage_bucket" "auto-expire" {
-  name                        = "project-af21f5d0-df32-4d47-9b0-auto-expire"
-  location                    = "EU"
-  force_destroy               = true
+resource "google_storage_bucket" "demo-bucket" {
+  name          = var.gcs_bucket_name
+  location      = var.location
+  storage_class = var.gcs_storage_class
+  force_destroy = true
   uniform_bucket_level_access = true
 
   lifecycle_rule {
@@ -30,4 +27,9 @@ resource "google_storage_bucket" "auto-expire" {
       type = "AbortIncompleteMultipartUpload"
     }
   }
+}
+
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = var.bq_dataset_name
+  location   = var.location
 }
