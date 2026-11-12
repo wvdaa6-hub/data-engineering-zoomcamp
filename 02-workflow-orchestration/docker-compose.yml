@@ -1,6 +1,8 @@
 volumes:
   ny_taxi_postgres_data:
     driver: local
+  pgadmin_data:
+    driver: local
   kestra_postgres_data:
     driver: local
   kestra_data:
@@ -25,6 +27,8 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=root
@@ -82,6 +86,11 @@ services:
             tmpDir:
               path: /tmp/kestra-wd/tmp
           url: http://localhost:8080/
+          ai:
+            type: gemini
+            gemini:
+              model-name: gemini-2.5-flash
+              api-key: ${GEMINI_API_KEY}
     ports:
       - "8080:8080"
       - "8081:8081"
